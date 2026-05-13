@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>Save to Obsidian</title>
+  </head>
+  <body>
+    <header>
+      <h1>Save to Obsidian</h1>
+      <span id="kind-badge" class="badge">article</span>
+    </header>
+
+    <section class="preview">
+      <label for="title">Title</label>
+      <input id="title" type="text" class="title-input" />
+      <label>Source</label>
+      <div id="url" class="preview-text muted">…</div>
+    </section>
+
+    <section class="form">
+      <label for="folder">Folder</label>
+      <input id="folder" type="text" placeholder="Inbox" />
+
+      <label for="tags">Tags (space-separated)</label>
+      <input id="tags" type="text" placeholder="#read-later #web" />
+    </section>
+
+    <footer>
+      <div class="actions">
+        <button id="save" class="primary">Save</button>
+        <button id="open-options" class="link">Settings</button>
+      </div>
+      <div id="status" class="status"></div>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

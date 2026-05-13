@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Save to Obsidian — Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Save to Obsidian</h1>
+      <p class="muted">
+        Configure your vault and the default note layout. Notes are dispatched
+        via the <code>obsidian://new</code> URI scheme, so no extra Obsidian
+        plugins are required.
+      </p>
+
+      <section>
+        <label for="vault">Vault name</label>
+        <input id="vault" type="text" placeholder="MyVault" />
+        <p class="hint">
+          The exact vault name as shown in Obsidian's vault switcher. Required.
+        </p>
+
+        <label for="folder">Default folder</label>
+        <input id="folder" type="text" placeholder="Inbox" />
+        <p class="hint">Path inside the vault. Leave blank to save at the root.</p>
+
+        <label for="defaultTags">Default tags</label>
+        <input id="defaultTags" type="text" placeholder="#read-later" />
+        <p class="hint">Space-separated. Appended to per-note tags from the popup.</p>
+      </section>
+
+      <section>
+        <h2>Article template</h2>
+        <textarea id="articleTemplate" rows="10"></textarea>
+        <p class="hint">
+          Placeholders: <code>{{title}}</code>, <code>{{author}}</code>,
+          <code>{{url}}</code>, <code>{{date}}</code>, <code>{{tags}}</code>,
+          <code>{{posted}}</code>, <code>{{content}}</code>. Use
+          <code>{{#tags}}…{{/tags}}</code> for conditional blocks.
+        </p>
+      </section>
+
+      <section>
+        <h2>X.com template</h2>
+        <textarea id="twitterTemplate" rows="10"></textarea>
+      </section>
+
+      <footer>
+        <button id="save" class="primary">Save settings</button>
+        <button id="reset" class="link">Reset templates</button>
+        <span id="status" class="status"></span>
+      </footer>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

@@ -1,0 +1,142 @@
+:root {
+  --bg: #1e1e22;
+  --panel: #27272d;
+  --fg: #e4e4e7;
+  --muted: #9ca3af;
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --border: #3f3f46;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 340px;
+  margin: 0;
+  padding: 12px 14px 14px;
+  font: 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--panel);
+  color: var(--muted);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.badge.twitter {
+  color: #fff;
+  background: #1da1f2;
+  border-color: transparent;
+}
+
+.preview {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.preview label,
+.form label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+  margin-bottom: 3px;
+}
+
+.preview label:first-child { margin-top: 0; }
+
+.preview-text {
+  font-size: 12.5px;
+  word-break: break-word;
+  line-height: 1.35;
+}
+
+.muted { color: var(--muted); font-size: 11.5px; }
+
+.form input,
+.preview input {
+  width: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12.5px;
+}
+
+.form input { background: var(--panel); }
+
+.form input:focus,
+.preview input:focus { outline: 1px solid var(--accent); }
+
+footer {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+footer .actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button.primary {
+  flex: 1;
+  background: var(--accent);
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+button.primary:hover { background: var(--accent-hover); }
+button.primary:disabled { opacity: 0.5; cursor: default; }
+
+button.link {
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+button.link:hover { color: var(--fg); }
+
+.status {
+  font-size: 11.5px;
+  color: var(--muted);
+  word-break: break-word;
+  line-height: 1.4;
+  min-height: 1em;
+}
+.status.ok { color: #34d399; }
+.status.err { color: #f87171; }
