@@ -43,6 +43,37 @@ async function runExtractor(tabId, file) {
   return results?.[0]?.result || null;
 }
 
+async function fetchArticleMeta(tweetId) {
+  // X long-form Articles attached to a tweet expose their title, preview
+  // text, and cover image through the same syndication endpoint that
+  // powers embedded tweets. The DOM card on the tweet page itself doesn't
+  // surface the title with any stable selector, so this is the reliable
+  // path. Cross-origin fetch works from the popup because the endpoint
+  // is CORS-friendly and the manifest grants <all_urls>.
+  const url = `https://cdn.syndication.twitter.com/tweet-result?id=${encodeURIComponent(tweetId)}&token=a`;
+  const resp = await fetch(url, { credentials: "omit" });
+  if (!resp.ok) return null;
+  const data = await resp.json();
+  if (!data || !data.article) return null;
+  const media = data.article.cover_media?.media_info;
+  return {
+    title: data.article.title || "",
+    previewText: data.article.preview_text || "",
+    coverUrl: media?.original_img_url || "",
+    articleUrl: data.entities?.urls?.[0]?.expanded_url || "",
+  };
+}
+
+function renderArticlePreview(meta, fallbackHref) {
+  const parts = [];
+  if (meta.coverUrl) parts.push(`![](${meta.coverUrl})`);
+  if (meta.title) parts.push(`## ${meta.title}`);
+  if (meta.previewText) parts.push(meta.previewText);
+  const url = meta.articleUrl || fallbackHref;
+  if (url) parts.push(`[Read full article on X](${url})`);
+  return parts.join("\n\n");
+}
+
 async function init() {
   const settings = await chrome.storage.sync.get({
     vault: "",
@@ -81,6 +112,26 @@ async function init() {
     setStatus("Extraction returned empty", "err");
     els.save.disabled = true;
     return;
+  }
+
+  if (extracted._articlePreview) {
+    // Tweet attaches an X long-form Article. Pull the title + preview text
+    // from the syndication API and replace the cover-only content the
+    // synchronous extractor produced. If the call fails the original
+    // content (cover image at minimum) stays in place.
+    setStatus("Fetching article…");
+    try {
+      const meta = await fetchArticleMeta(extracted._articlePreview.tweetId);
+      if (meta && (meta.title || meta.previewText)) {
+        extracted.content = renderArticlePreview(
+          meta,
+          extracted._articlePreview.articleHref,
+        );
+        if (meta.title) extracted.title = meta.title;
+      }
+    } catch { /* leave fallback content as-is */ }
+    delete extracted._articlePreview;
+    setStatus("");
   }
 
   extracted.kind = kind;

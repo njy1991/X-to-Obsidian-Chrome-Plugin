@@ -226,6 +226,17 @@
     );
   }
 
+  function findArticlePreviewLink(article) {
+    // A tweet that links to an X long-form Article renders the body as just
+    // a shortened t.co URL plus a clickable preview card. The card's anchor
+    // points at /i/article/<id>. The card's title text is rendered with
+    // obfuscated CSS classes — no stable testid — so the regular extractor
+    // only catches the cover image (a tweetPhoto). Spotting the article
+    // link is how we know to hydrate the missing title and preview text
+    // from the syndication endpoint in the popup.
+    return article.querySelector('a[href*="/i/article/"]');
+  }
+
   function extractArticleTitle(titleEl) {
     // X long-form "Articles" expose the headline at this testid. When present
     // it's the canonical title and beats any heuristic over the post body.
@@ -262,12 +273,24 @@
   const author = extractAuthor(article);
   const articleTitleEl = findArticleTitleEl(article);
   const articleTitle = extractArticleTitle(articleTitleEl);
-  const isLongFormArticle = !!document.querySelector(
+  const isLongFormArticleView = !!document.querySelector(
     '[data-testid="twitterArticleRichTextView"]',
   );
-  const content = isLongFormArticle
-    ? extractArticleContent(articleTitleEl)
-    : extractContent(article);
+
+  let content;
+  let articlePreview = null;
+  if (isLongFormArticleView) {
+    content = extractArticleContent(articleTitleEl);
+  } else {
+    const previewLink = findArticlePreviewLink(article);
+    content = extractContent(article);
+    if (previewLink) {
+      articlePreview = {
+        articleHref: previewLink.href,
+        tweetId: extractId(),
+      };
+    }
+  }
 
   return {
     title: buildTitle(author, content, articleTitle),
@@ -276,5 +299,6 @@
     posted: extractTimestamp(article),
     id: extractId(),
     url: location.href,
+    _articlePreview: articlePreview,
   };
 })();
