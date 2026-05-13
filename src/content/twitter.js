@@ -97,6 +97,103 @@
       .join("\n\n");
   }
 
+  function renderInlineNodes(el) {
+    // Walk inline children preserving links, BRs, and inline images. Used for
+    // article paragraphs and list items where the body isn't a tweetText block.
+    const parts = [];
+    el.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        parts.push(node.textContent);
+      } else if (node.nodeName === "BR") {
+        parts.push("\n");
+      } else if (node.nodeName === "IMG") {
+        const src = node.getAttribute("src") || "";
+        const alt = node.getAttribute("alt") || "";
+        if (src && !src.startsWith("data:")) parts.push(`![${alt}](${src})`);
+        else parts.push(alt);
+      } else if (node.nodeName === "A") {
+        const href = node.getAttribute("href") || "";
+        const text = node.textContent || "";
+        if (href.startsWith("/") || href.startsWith("http")) {
+          const url = href.startsWith("/") ? `https://x.com${href}` : href;
+          parts.push(text.startsWith("@") || text.startsWith("#") ? text : `[${text}](${url})`);
+        } else {
+          parts.push(text);
+        }
+      } else {
+        parts.push(renderInlineNodes(node));
+      }
+    });
+    return parts.join("").trim();
+  }
+
+  function renderArticleBlock(el) {
+    const testid = el.getAttribute("data-testid") || "";
+    if (testid === "tweetPhoto") return renderPhotoBlock(el);
+    if (testid === "videoPlayer") return renderVideoBlock(el);
+    const tag = el.tagName.toLowerCase();
+    if (tag === "h1") return "# " + (el.innerText || "").trim();
+    if (tag === "h2") return "## " + (el.innerText || "").trim();
+    if (tag === "h3") return "### " + (el.innerText || "").trim();
+    if (tag === "h4") return "#### " + (el.innerText || "").trim();
+    if (tag === "h5") return "##### " + (el.innerText || "").trim();
+    if (tag === "h6") return "###### " + (el.innerText || "").trim();
+    if (tag === "ul" || tag === "ol") {
+      const prefix = tag === "ol" ? (i) => `${i + 1}. ` : () => "- ";
+      const items = [...el.querySelectorAll(":scope > li")];
+      return items
+        .map((li, i) => {
+          const inline = renderInlineNodes(li);
+          return inline ? prefix(i) + inline : "";
+        })
+        .filter(Boolean)
+        .join("\n");
+    }
+    if (tag === "li") {
+      return "- " + renderInlineNodes(el);
+    }
+    return renderInlineNodes(el);
+  }
+
+  function extractArticleContent(titleEl) {
+    // X long-form Articles render the body in [data-testid="twitterArticleRichTextView"]
+    // (the cover image lives one level up in [data-testid="twitterArticleReadView"],
+    // outside that body). Body paragraphs are Draft.js <div> blocks with class
+    // .public-DraftStyleDefault-block or .longform-unstyled — NOT <p> tags — which
+    // is why the previous TWEET_BLOCK_SELECTOR picked up only the cover image.
+    const readView = document.querySelector('[data-testid="twitterArticleReadView"]');
+    const richTextView = document.querySelector('[data-testid="twitterArticleRichTextView"]');
+    const out = [];
+
+    if (readView) {
+      const cover = readView.querySelector('[data-testid="tweetPhoto"]');
+      if (cover && !richTextView?.contains(cover)) {
+        const md = renderPhotoBlock(cover);
+        if (md) out.push(md);
+      }
+    }
+
+    if (richTextView) {
+      const candidates = [
+        ...richTextView.querySelectorAll(
+          'h1, h2, h3, h4, h5, h6, ul, ol, ' +
+            ".public-DraftStyleDefault-block, .longform-unstyled, " +
+            '[data-testid="tweetPhoto"], [data-testid="videoPlayer"]',
+        ),
+      ];
+      const filtered = candidates.filter((b) => {
+        if (b === titleEl) return false;
+        return !candidates.some((p) => p !== b && p.contains(b));
+      });
+      for (const el of filtered) {
+        const md = renderArticleBlock(el);
+        if (md) out.push(md);
+      }
+    }
+
+    return out.join("\n\n");
+  }
+
   function extractAuthor(article) {
     const userName = article.querySelector('[data-testid="User-Name"]');
     if (!userName) return { name: "", handle: "" };
@@ -121,13 +218,18 @@
     return m ? m[1] : "";
   }
 
-  function extractArticleTitle(article) {
+  function findArticleTitleEl(article) {
+    return (
+      article?.querySelector('[data-testid="twitter-article-title"]') ||
+      document.querySelector('[data-testid="twitter-article-title"]') ||
+      null
+    );
+  }
+
+  function extractArticleTitle(titleEl) {
     // X long-form "Articles" expose the headline at this testid. When present
     // it's the canonical title and beats any heuristic over the post body.
-    const el =
-      article?.querySelector('[data-testid="twitter-article-title"]') ||
-      document.querySelector('[data-testid="twitter-article-title"]');
-    return (el?.innerText || el?.textContent || "").replace(/\s+/g, " ").trim();
+    return (titleEl?.innerText || titleEl?.textContent || "").replace(/\s+/g, " ").trim();
   }
 
   function buildTitle(author, content, articleTitle) {
@@ -158,8 +260,14 @@
   }
 
   const author = extractAuthor(article);
-  const content = extractContent(article);
-  const articleTitle = extractArticleTitle(article);
+  const articleTitleEl = findArticleTitleEl(article);
+  const articleTitle = extractArticleTitle(articleTitleEl);
+  const isLongFormArticle = !!document.querySelector(
+    '[data-testid="twitterArticleRichTextView"]',
+  );
+  const content = isLongFormArticle
+    ? extractArticleContent(articleTitleEl)
+    : extractContent(article);
 
   return {
     title: buildTitle(author, content, articleTitle),
