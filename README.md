@@ -2,6 +2,14 @@
 
 A Manifest V3 Chrome extension that saves the active **X.com (Twitter) post** or **web article** to your Obsidian vault as a Markdown note. One click, no Obsidian plugins required — uses the built-in `obsidian://new` URI scheme.
 
+## Support this plugin
+
+If you love this plugin, help me raise $5 to pay the Google developer fee and launch it on the Chrome Web Store.
+
+[**Donate with PayPal**](https://www.paypal.com/donate/?hosted_button_id=AYA3ZEQZXX25Y)
+
+<img src="src/icons/paypal-donate-qr.png" alt="PayPal donation QR code" width="128" height="128" />
+
 ## Features
 
 - **One-click capture** from the toolbar icon on any web page or X.com status page.
