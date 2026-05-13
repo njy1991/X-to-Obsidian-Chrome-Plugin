@@ -82,7 +82,11 @@
           <code>{{date}}</code>, <code>{{tags}}</code>,
           <code>{{readme}}</code>. Use
           <code>{{#topics}}…{{/topics}}</code> or
-          <code>{{#tags}}…{{/tags}}</code> for conditional blocks.
+          <code>{{#tags}}…{{/tags}}</code> for conditional blocks. README
+          images are captured: the raw README markdown is fetched via the
+          GitHub API and relative image paths are rewritten to absolute
+          <code>raw.githubusercontent.com</code> URLs so they render in
+          Obsidian.
         </p>
       </section>
 
