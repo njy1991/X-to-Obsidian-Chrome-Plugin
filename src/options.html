@@ -8,6 +8,30 @@
   <body>
     <main>
       <h1>Save to Obsidian</h1>
+
+      <section class="donate">
+        <h2>Support this plugin</h2>
+        <p class="hint">
+          If you love this plugin, help me raise $5 to pay the Google
+          developer fee and launch it on the Chrome Web Store.
+        </p>
+        <div class="donate-row">
+          <a
+            class="paypal-button"
+            href="https://www.paypal.com/donate/?hosted_button_id=AYA3ZEQZXX25Y"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Donate with PayPal</a>
+          <img
+            class="donate-qr"
+            src="icons/paypal-donate-qr.png"
+            alt="PayPal donation QR code"
+            width="128"
+            height="128"
+          />
+        </div>
+      </section>
+
       <p class="muted">
         Configure your vault and the default note layout. Notes are dispatched
         via the <code>obsidian://new</code> URI scheme, so no extra Obsidian
@@ -51,29 +75,6 @@
         <button id="reset" class="link">Reset templates</button>
         <span id="status" class="status"></span>
       </footer>
-
-      <section class="donate">
-        <h2>Support this plugin</h2>
-        <p class="hint">
-          If you love this plugin, help me raise $5 to pay the Google
-          developer fee and launch it on the Chrome Web Store.
-        </p>
-        <div class="donate-row">
-          <a
-            class="paypal-button"
-            href="https://www.paypal.com/donate/?hosted_button_id=AYA3ZEQZXX25Y"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Donate with PayPal</a>
-          <img
-            class="donate-qr"
-            src="icons/paypal-donate-qr.png"
-            alt="PayPal donation QR code"
-            width="128"
-            height="128"
-          />
-        </div>
-      </section>
     </main>
     <script src="options.js"></script>
   </body>
