@@ -14,6 +14,7 @@ If you love this plugin, help me raise $5 to pay the Google developer fee and la
 
 - **One-click capture** from the toolbar icon on any web page or X.com status page.
 - **X.com extractor** preserves the post in document order: text, images, video posters, and quote-card links interleave the same way they appear in the original tweet. Handles long-form X "Articles" too.
+- **GitHub repository capture** — saves a repo page with description, stars, forks, language, license, topics, and the full README (raw markdown via the GitHub API, with relative image paths rewritten to absolute `raw.githubusercontent.com` URLs so screenshots render in Obsidian). Default note title is `repo / owner`.
 - **Article extractor** uses a lightweight readability heuristic, finds the densest text block, and converts a useful subset of HTML to clean Markdown (headings, paragraphs, lists, code, blockquote, links, images).
 - **Editable title** in the popup before saving — the title becomes the Obsidian note filename and the `{{title}}` template variable.
 - **Folder + tags** can be set per save, with defaults pulled from settings.
@@ -61,6 +62,13 @@ Then load the repo folder via `chrome://extensions` → **Load unpacked** as in 
 3. Edit the title if you like (defaults to the tweet's first line, or the long-form article headline).
 4. Click **Save**.
 
+### Save a GitHub repository
+
+1. Open the repo's main page (e.g. `https://github.com/owner/repo`).
+2. Click the toolbar icon. The badge switches to **GitHub** automatically.
+3. The default title is `repo / owner`; edit if you like.
+4. Click **Save**. The note includes description, stars, forks, language, license, topics, and the README (with images rewritten to absolute URLs so they render in Obsidian).
+
 The first save will trigger macOS / Windows to prompt for the `obsidian://` URL handler. Approve once (tick "Always allow") and subsequent saves are silent.
 
 ## Settings
@@ -74,6 +82,7 @@ Open **Settings** from the popup or from the toolbar icon's right-click menu →
 | **Default tags** | Space-separated tags appended to per-note tags entered in the popup. |
 | **Article template** | Markdown template rendered for generic articles. |
 | **X.com template** | Markdown template rendered for X.com posts. |
+| **GitHub template** | Markdown template rendered for GitHub repository pages. |
 
 ### Template placeholders
 

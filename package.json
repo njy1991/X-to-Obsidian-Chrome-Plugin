@@ -1,8 +1,8 @@
 {
   "name": "save-to-obsidian",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
-  "description": "Chrome extension that saves the active X.com post or web article to Obsidian as a Markdown note.",
+  "description": "Chrome extension that saves the active X.com post, GitHub repo, or web article to Obsidian as a Markdown note.",
   "license": "MIT",
   "type": "module",
   "scripts": {

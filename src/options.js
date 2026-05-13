@@ -17,7 +17,7 @@ const DEFAULT_TWITTER_TEMPLATE = `{{content}}
 {{#tags}}**Tags:** {{tags}}
 {{/tags}}`;
 
-const DEFAULT_GITHUB_TEMPLATE = `# {{owner}} / {{repo}}
+const DEFAULT_GITHUB_TEMPLATE = `# {{repo}} / {{owner}}
 
 > {{description}}
 

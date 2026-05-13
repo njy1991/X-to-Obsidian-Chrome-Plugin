@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Save to Obsidian",
-  "version": "0.1.0",
-  "description": "Save the current X.com post or web article to your Obsidian vault as a Markdown note.",
+  "version": "0.1.1",
+  "description": "Save the current X.com post, GitHub repo, or web article to your Obsidian vault as a Markdown note.",
   "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["<all_urls>"],
   "action": {

@@ -169,7 +169,7 @@
     kind: "github",
     owner,
     repo,
-    title: `${owner} / ${repo}`,
+    title: `${repo} / ${owner}`,
     description: extractDescription(),
     stars: api.stars || "",
     forks: api.forks || "",
