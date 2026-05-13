@@ -70,6 +70,22 @@
         <textarea id="twitterTemplate" rows="10"></textarea>
       </section>
 
+      <section>
+        <h2>GitHub template</h2>
+        <textarea id="githubTemplate" rows="15"></textarea>
+        <p class="hint">
+          Placeholders: <code>{{owner}}</code>, <code>{{repo}}</code>,
+          <code>{{description}}</code>, <code>{{stars}}</code>,
+          <code>{{forks}}</code>, <code>{{language}}</code>,
+          <code>{{license}}</code>, <code>{{topics}}</code>,
+          <code>{{updated}}</code>, <code>{{url}}</code>,
+          <code>{{date}}</code>, <code>{{tags}}</code>,
+          <code>{{readme}}</code>. Use
+          <code>{{#topics}}…{{/topics}}</code> or
+          <code>{{#tags}}…{{/tags}}</code> for conditional blocks.
+        </p>
+      </section>
+
       <footer>
         <button id="save" class="primary">Save settings</button>
         <button id="reset" class="link">Reset templates</button>

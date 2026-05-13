@@ -17,12 +17,41 @@ const DEFAULT_TWITTER_TEMPLATE = `{{content}}
 {{#tags}}**Tags:** {{tags}}
 {{/tags}}`;
 
+const DEFAULT_GITHUB_TEMPLATE = `# {{owner}} / {{repo}}
+
+> {{description}}
+
+| | |
+|---|---|
+| **Owner** | {{owner}} |
+| **Language** | {{language}} |
+| **Stars** | {{stars}} |
+| **Forks** | {{forks}} |
+| **License** | {{license}} |
+| **Updated** | {{updated}} |
+{{#topics}}
+**Topics:** {{topics}}
+{{/topics}}
+
+**Source:** {{url}}
+**Saved:** {{date}}
+{{#tags}}**Tags:** {{tags}}
+{{/tags}}
+
+---
+
+## README
+
+{{readme}}
+`;
+
 const els = {
   vault: document.getElementById("vault"),
   folder: document.getElementById("folder"),
   defaultTags: document.getElementById("defaultTags"),
   articleTemplate: document.getElementById("articleTemplate"),
   twitterTemplate: document.getElementById("twitterTemplate"),
+  githubTemplate: document.getElementById("githubTemplate"),
   save: document.getElementById("save"),
   reset: document.getElementById("reset"),
   status: document.getElementById("status"),
@@ -35,12 +64,14 @@ async function load() {
     defaultTags: "",
     articleTemplate: DEFAULT_ARTICLE_TEMPLATE,
     twitterTemplate: DEFAULT_TWITTER_TEMPLATE,
+    githubTemplate: DEFAULT_GITHUB_TEMPLATE,
   });
   els.vault.value = stored.vault;
   els.folder.value = stored.folder;
   els.defaultTags.value = stored.defaultTags;
   els.articleTemplate.value = stored.articleTemplate;
   els.twitterTemplate.value = stored.twitterTemplate;
+  els.githubTemplate.value = stored.githubTemplate;
 }
 
 els.save.addEventListener("click", async () => {
@@ -50,6 +81,7 @@ els.save.addEventListener("click", async () => {
     defaultTags: els.defaultTags.value.trim(),
     articleTemplate: els.articleTemplate.value,
     twitterTemplate: els.twitterTemplate.value,
+    githubTemplate: els.githubTemplate.value,
   });
   els.status.textContent = "Saved";
   els.status.className = "status ok";
@@ -59,6 +91,7 @@ els.save.addEventListener("click", async () => {
 els.reset.addEventListener("click", () => {
   els.articleTemplate.value = DEFAULT_ARTICLE_TEMPLATE;
   els.twitterTemplate.value = DEFAULT_TWITTER_TEMPLATE;
+  els.githubTemplate.value = DEFAULT_GITHUB_TEMPLATE;
 });
 
 load();

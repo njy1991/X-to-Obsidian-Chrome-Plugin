@@ -30,6 +30,23 @@ function isTwitter(url) {
   } catch { return false; }
 }
 
+function isGitHub(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname !== "github.com" && !u.hostname.endsWith(".github.com")) return false;
+    // Repo pages match /{owner}/{repo}[/...]. Exclude reserved single-segment paths
+    // (settings, marketplace, etc.) and well-known non-repo two-segment paths.
+    const segs = u.pathname.split("/").filter(Boolean);
+    if (segs.length < 2) return false;
+    const reservedOwners = new Set([
+      "settings", "marketplace", "notifications", "explore", "topics",
+      "trending", "collections", "events", "sponsors", "pulls", "issues",
+      "search", "new", "login", "signup", "orgs", "organizations",
+    ]);
+    return !reservedOwners.has(segs[0]);
+  } catch { return false; }
+}
+
 async function getActiveTab() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   return tab;
@@ -92,13 +109,16 @@ async function init() {
   }
   activeTabId = tab.id;
 
-  const kind = isTwitter(tab.url) ? "twitter" : "article";
-  els.badge.textContent = kind === "twitter" ? "X.com" : "article";
-  els.badge.className = "badge" + (kind === "twitter" ? " twitter" : "");
+  const kind = isTwitter(tab.url) ? "twitter"
+             : isGitHub(tab.url)  ? "github"
+             : "article";
+  const badgeLabel = { twitter: "X.com", github: "GitHub", article: "article" }[kind];
+  els.badge.textContent = badgeLabel;
+  els.badge.className = "badge" + (kind !== "article" ? ` ${kind}` : "");
 
-  const file = kind === "twitter"
-    ? "src/content/twitter.js"
-    : "src/content/article.js";
+  const file = kind === "twitter" ? "src/content/twitter.js"
+             : kind === "github"  ? "src/content/github.js"
+             : "src/content/article.js";
 
   try {
     extracted = await runExtractor(tab.id, file);

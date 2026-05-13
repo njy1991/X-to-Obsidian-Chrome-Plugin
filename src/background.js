@@ -22,6 +22,34 @@ const DEFAULT_TWITTER_TEMPLATE = `{{content}}
 {{#tags}}**Tags:** {{tags}}
 {{/tags}}`;
 
+const DEFAULT_GITHUB_TEMPLATE = `# {{owner}} / {{repo}}
+
+> {{description}}
+
+| | |
+|---|---|
+| **Owner** | {{owner}} |
+| **Language** | {{language}} |
+| **Stars** | {{stars}} |
+| **Forks** | {{forks}} |
+| **License** | {{license}} |
+| **Updated** | {{updated}} |
+{{#topics}}
+**Topics:** {{topics}}
+{{/topics}}
+
+**Source:** {{url}}
+**Saved:** {{date}}
+{{#tags}}**Tags:** {{tags}}
+{{/tags}}
+
+---
+
+## README
+
+{{readme}}
+`;
+
 async function getSettings() {
   const defaults = {
     vault: "",
@@ -29,6 +57,7 @@ async function getSettings() {
     defaultTags: "",
     articleTemplate: DEFAULT_ARTICLE_TEMPLATE,
     twitterTemplate: DEFAULT_TWITTER_TEMPLATE,
+    githubTemplate: DEFAULT_GITHUB_TEMPLATE,
   };
   const stored = await chrome.storage.sync.get(defaults);
   return { ...defaults, ...stored };
@@ -55,8 +84,36 @@ function sanitizeFilename(name) {
 function buildNote(extracted, settings, userInput) {
   const tags = [settings.defaultTags, userInput.tags].filter(Boolean).join(" ").trim();
   const now = new Date().toISOString().slice(0, 10);
+  const kind = extracted.kind;
 
-  const isTwitter = extracted.kind === "twitter";
+  if (kind === "github") {
+    // " - " separator dodges the `/` strip inside sanitizeFilename which would
+    // otherwise collapse owner+repo into a single token.
+    const owner = extracted.owner || "";
+    const repo = extracted.repo || "";
+    const filenameBase = owner && repo ? `${owner} - ${repo}` : (owner || repo || "GitHub Repo");
+    const data = {
+      owner,
+      repo,
+      description: extracted.description || "",
+      stars: extracted.stars || "",
+      forks: extracted.forks || "",
+      language: extracted.language || "",
+      license: extracted.license || "",
+      topics: extracted.topics || "",
+      updated: extracted.updated || "",
+      readme: extracted.readme || "",
+      url: extracted.url,
+      date: now,
+      tags,
+    };
+    return {
+      filename: sanitizeFilename(filenameBase),
+      body: renderTemplate(settings.githubTemplate, data),
+    };
+  }
+
+  const isTwitter = kind === "twitter";
   const template = isTwitter ? settings.twitterTemplate : settings.articleTemplate;
 
   const data = {
