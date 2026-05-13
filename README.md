@@ -4,7 +4,7 @@ A Manifest V3 Chrome extension that saves the active **X.com (Twitter) post** or
 
 ## Support this plugin
 
-If you love this plugin, help me raise $5 to pay the Google developer fee and launch it on the Chrome Web Store.
+If you love this plugin, help me raise $5 to pay the Google developer fee and launch it on the Chrome Web Store. More donation covers the token for new features!
 
 [**Donate with PayPal**](https://www.paypal.com/donate/?hosted_button_id=AYA3ZEQZXX25Y)
 
